@@ -35,7 +35,13 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(Project-button_state_webserver Project-button_state_webserver.c )
+add_executable(Project-button_state_webserver Project-button_state_webserver.c 
+                                                src_/temperature_sensor.c
+                                                src_/button.c
+                                                src_/page.c
+                                                src_/server_http.c
+                                                src_/wifi.c
+)
 
 pico_set_program_name(Project-button_state_webserver "Project-button_state_webserver")
 pico_set_program_version(Project-button_state_webserver "0.1")
@@ -46,17 +52,33 @@ pico_enable_stdio_usb(Project-button_state_webserver 1)
 
 # Add the standard library to the build
 target_link_libraries(Project-button_state_webserver
-        pico_stdlib)
+                        pico_stdlib
+                        hardware_gpio
+                        hardware_adc
+                        pico_cyw43_arch_lwip_threadsafe_background
+)
 
 # Add the standard include files to the build
 target_include_directories(Project-button_state_webserver PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
+        ${PICO_SDK_PATH}/lib/lwip/src/include
+        ${PICO_SDK_PATH}/lib/lwip/src/include/arch
+        ${PICO_SDK_PATH}/lib/lwip/src/include/lwip
+        ${CMAKE_CURRENT_LIST_DIR}/include_headers
+        ${CMAKE_CURRENT_LIST_DIR}/src_
 )
+
+
+
+target_sources(Project-button_state_webserver PRIVATE
+    ${PICO_SDK_PATH}/lib/lwip/src/apps/http/httpd.c
+    ${PICO_SDK_PATH}/lib/lwip/src/apps/http/fs.c
+)
+
 
 # Add any user requested libraries
 target_link_libraries(Project-button_state_webserver 
-        pico_cyw43_arch_none
-        )
+)
 
 pico_add_extra_outputs(Project-button_state_webserver)
 
