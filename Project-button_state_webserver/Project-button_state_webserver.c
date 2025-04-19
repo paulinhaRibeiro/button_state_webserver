@@ -6,6 +6,9 @@
 #include "server_http.h"
 #include "wifi.h"
 
+#include "thingspeak.h"
+
+
 const uint BUTTON_A_PIN = 5; // Pino do Botão A
 
 volatile bool button_pressed = false;
@@ -23,6 +26,8 @@ int main()
 
     // Tempo para leitura do estado do botão
     absolute_time_t last_button_update = get_absolute_time();
+
+    absolute_time_t last_Thingspeak_update = get_absolute_time();
 
     sleep_ms(10000);
 
@@ -46,6 +51,21 @@ int main()
             button_pressed = button_is_pressed(BUTTON_A_PIN);
             // Atualiza o tempo de leitura
             last_button_update = get_absolute_time();
+        }
+
+        // Envia os dados do botão e da temperatura ao Thingspeak a cada 20seg
+        if (absolute_time_diff_us(last_Thingspeak_update, get_absolute_time()) >= 20000000)
+        {
+            if (button_pressed)
+            {
+
+                send_data_to_thingspeak(temperature, 1);
+            }
+            else
+            {
+                send_data_to_thingspeak(temperature, 0);
+            }
+            last_Thingspeak_update = get_absolute_time();
         }
 
         sleep_ms(100);

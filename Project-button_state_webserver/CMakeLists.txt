@@ -41,6 +41,7 @@ add_executable(Project-button_state_webserver Project-button_state_webserver.c
                                                 src_/page.c
                                                 src_/server_http.c
                                                 src_/wifi.c
+                                                src_/thingspeak.c
 )
 
 pico_set_program_name(Project-button_state_webserver "Project-button_state_webserver")
